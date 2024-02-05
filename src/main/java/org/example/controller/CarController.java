@@ -64,7 +64,7 @@ public class CarController extends HttpServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
 
         String model = req.getParameter("model");
         PostgresqlDB postgresqlDB = new PostgresqlDB();
@@ -82,7 +82,7 @@ public class CarController extends HttpServlet {
     }
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) {
 
         String model = req.getParameter("model");
         Long id = Long.valueOf(req.getParameter("id"));
