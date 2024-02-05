@@ -48,15 +48,7 @@ public class CarController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
 
-
-        String path = req.getRequestURI();
-
         String model = req.getParameter("model");
-
-        System.out.println("path=" + path);
-
-        System.out.println("model=" + model);
-
         PostgresqlDB postgresqlDB = new PostgresqlDB();
 
             try {
@@ -64,18 +56,47 @@ public class CarController extends HttpServlet {
                 CarRepository carRepository = new CarDbRepositoryImpl(postgresqlDB.getConnection());
                 CarService carService = new CarServiceImpl(carRepository);
 
-                if (path.endsWith("/api")) {
-                    carService.addCar(model);
-                }else if (path.endsWith("/api/update")) {
-                    Long id = Long.valueOf(req.getParameter("id"));
-                    carService.editModel(id, model);
-                }else if (path.endsWith("/api/delete")) {
-                    carService.deleteCar(model);
-                }
+                carService.addCar(model);
 
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
+    }
 
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        String model = req.getParameter("model");
+        PostgresqlDB postgresqlDB = new PostgresqlDB();
+
+        try {
+            Class.forName("org.postgresql.Driver");
+            CarRepository carRepository = new CarDbRepositoryImpl(postgresqlDB.getConnection());
+            CarService carService = new CarServiceImpl(carRepository);
+
+            carService.deleteCar(model);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        String model = req.getParameter("model");
+        Long id = Long.valueOf(req.getParameter("id"));
+        PostgresqlDB postgresqlDB = new PostgresqlDB();
+
+        try {
+            Class.forName("org.postgresql.Driver");
+            CarRepository carRepository = new CarDbRepositoryImpl(postgresqlDB.getConnection());
+            CarService carService = new CarServiceImpl(carRepository);
+
+            carService.editModel(id, model);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
