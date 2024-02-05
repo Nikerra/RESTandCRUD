@@ -10,7 +10,6 @@ public class PostgresqlDB implements AutoCloseable {
     public static final String PASSWD = "123456";
     private static Connection connection;
 
-
     public static Connection getConnection() throws SQLException {
         connection = connection == null ? DriverManager.getConnection(URL_MEM, USER, PASSWD) : connection;
         return connection;

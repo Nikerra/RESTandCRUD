@@ -3,15 +3,17 @@ package org.example.controller;
 
 import org.example.model.Car;
 import org.example.repository.CarDbRepositoryImpl;
-
 import org.example.service.CarService;
 import org.example.service.CarServiceImpl;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
 
 import java.util.Set;
@@ -20,8 +22,7 @@ import java.util.Set;
 public class CarController extends HttpServlet {
     CarDbRepositoryImpl carDbRepository = new CarDbRepositoryImpl();
 
-    public CarController() {
-    }
+    public CarController() {}
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -41,16 +42,17 @@ public class CarController extends HttpServlet {
                 throw new RuntimeException(e);
             }
         }
-
-
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
 
-        String model = req.getParameter("model");
-
             try {
+                String jsonString = JSONStringConverter(req);
+                Object obj = new JSONParser().parse(jsonString);
+                JSONObject jo = (JSONObject) obj;
+                String model = (String) jo.get("model");
+
                 CarService carService = new CarServiceImpl(carDbRepository.initConnection());
                 carService.addCar(model);
             } catch (Exception e) {
@@ -61,10 +63,12 @@ public class CarController extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
 
-        String model = req.getParameter("model");
-
-
         try {
+            String jsonString = JSONStringConverter(req);
+            Object obj = new JSONParser().parse(jsonString);
+            JSONObject jo = (JSONObject) obj;
+            String model = (String) jo.get("model");
+
             CarService carService = new CarServiceImpl(carDbRepository.initConnection());
             carService.deleteCar(model);
         } catch (Exception e) {
@@ -75,14 +79,27 @@ public class CarController extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) {
 
-        String model = req.getParameter("model");
-        Long id = Long.valueOf(req.getParameter("id"));
-
         try {
+            String jsonString = JSONStringConverter(req);
+            Object obj = new JSONParser().parse(jsonString);
+            JSONObject jo = (JSONObject) obj;
+
+            String model = (String) jo.get("model");
+            Long id = Long.valueOf((String) jo.get("id"));
+
             CarService carService = new CarServiceImpl(carDbRepository.initConnection());
             carService.editModel(id, model);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+    private String JSONStringConverter(HttpServletRequest req) throws IOException {
+        BufferedReader reader = req.getReader();
+        int intValueOfChar;
+        StringBuilder jsonString = new StringBuilder();
+        while ((intValueOfChar = reader.read()) != -1) {
+            jsonString.append((char) intValueOfChar);
+        }
+        return String.valueOf(jsonString);
     }
 }

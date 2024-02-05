@@ -15,7 +15,6 @@ public class CarDbRepositoryImpl implements CarRepository {
     private static final String UPDATE_CAR_SQL = "UPDATE car SET model = ? WHERE id = ?";
     private static final String SELECT_CAR_BY_ID = "SELECT * FROM car WHERE id = ?";
     private static final String SELECT_CAR_BY_MODEL = "SELECT * FROM car WHERE model = ?";
-    private static final String SELECT_CAR_FIND_ALL = "SELECT * FROM car";
     private static final String DELETE_CAR_DELETE_BY_MODEL = "delete from car where model = ?";
     private static final String SELECT_COUNT_FROM_ID = "SELECT COUNT(*) FROM car where id = ?";
     private static final String SELECT_COUNT_FROM_MODEL = "SELECT COUNT(*) FROM car where model = ?";
@@ -24,7 +23,6 @@ public class CarDbRepositoryImpl implements CarRepository {
     private PreparedStatement updatePreStmt;
     private PreparedStatement findByIdPreStmt;
     private PreparedStatement findByModelPreStmt;
-
     private PreparedStatement deleteCarById;
 
     public CarDbRepositoryImpl(Connection connection) throws SQLException {
@@ -57,7 +55,6 @@ public class CarDbRepositoryImpl implements CarRepository {
 
         if (optCar.isEmpty()) {
             if (car.getId() == null) {
-
                 createPreStmt.setString(1, car.getModel());
                 createPreStmt.executeUpdate();
             } else {
@@ -71,7 +68,9 @@ public class CarDbRepositoryImpl implements CarRepository {
 
     @Override
     public Optional<Car> findById(Long id) throws SQLException {
+
         int rowsCount = countRowsById(id);
+
         if (rowsCount > 1) {
             throw new RuntimeException("Car with id = " + id + " was found many times (" + rowsCount + ").");
         } else if (rowsCount == 0) {
@@ -90,6 +89,7 @@ public class CarDbRepositoryImpl implements CarRepository {
     public Set<Car> findByModel(String model) throws SQLException {
 
         int rowsCount = countRowsByModel(model);
+
         if (rowsCount > 1) {
             throw new RuntimeException("Car with model = " + model + " was found many times (" + rowsCount + ").");
         } else if (rowsCount == 0) {
@@ -98,7 +98,6 @@ public class CarDbRepositoryImpl implements CarRepository {
 
         findByModelPreStmt.setString(1, model);
         ResultSet resultSet = findByModelPreStmt.executeQuery();
-
         resultSet.next();
         Car car = new Car(resultSet.getLong(1), resultSet.getString(2));
         return Set.of(car);
@@ -113,10 +112,12 @@ public class CarDbRepositoryImpl implements CarRepository {
     }
 
     private int countRowsById(Long id) throws SQLException {
+
         PreparedStatement preparedStatement = connection.prepareStatement(SELECT_COUNT_FROM_ID);
         preparedStatement.setLong(1, id);
         ResultSet resultSet = preparedStatement.executeQuery();
         int rowCount = 0;
+
         while (resultSet.next()) {
             rowCount = resultSet.getInt(1);
         }
@@ -124,10 +125,12 @@ public class CarDbRepositoryImpl implements CarRepository {
     }
 
     private int countRowsByModel(String model) throws SQLException {
+
         PreparedStatement preparedStatement = connection.prepareStatement(SELECT_COUNT_FROM_MODEL);
         preparedStatement.setString(1, model);
         ResultSet resultSet = preparedStatement.executeQuery();
         int rowCount = 0;
+
         while (resultSet.next()) {
             rowCount = resultSet.getInt(1);
         }

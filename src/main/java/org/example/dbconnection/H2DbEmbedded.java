@@ -9,7 +9,6 @@ public class H2DbEmbedded implements AutoCloseable {
     private static final String URL_MEM = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1";
     private static final String USER = "sa";
     public static final String PASSWD = "";
-
     private static Connection connection;
 
     public static void initDb() throws SQLException {

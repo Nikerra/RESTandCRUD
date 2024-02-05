@@ -27,8 +27,6 @@ public class CarServiceImpl implements CarService {
         updateCarModel(car, newModel);
     }
 
-
-
     private void updateCarModel(Car car, String newModel) {
         car.setModel(newModel);
         try {
