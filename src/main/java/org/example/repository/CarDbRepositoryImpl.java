@@ -13,12 +13,12 @@ import java.util.Set;
 
 public class CarDbRepositoryImpl implements CarRepository {
     private final Connection connection;
-    private static final String CREATE_CAR_SQL = "INSERT INTO car (id, model) VALUES (?,?)";
+    private static final String CREATE_CAR_SQL = "INSERT INTO car (model) VALUES (?)";
     private static final String UPDATE_CAR_SQL = "UPDATE car SET model = ? WHERE id = ?";
     private static final String SELECT_CAR_BY_ID = "SELECT * FROM car WHERE id = ?";
     private static final String SELECT_CAR_BY_MODEL = "SELECT * FROM car WHERE model = ?";
     private static final String SELECT_CAR_FIND_ALL = "SELECT * FROM car";
-    private static final String DELETE_CAR_DELETE_BY_ID = "delete from car where id = ?";
+    private static final String DELETE_CAR_DELETE_BY_MODEL = "delete from car where model = ?";
     private static final String SELECT_COUNT_FROM_ID = "SELECT COUNT(*) FROM car where id = ?";
     private static final String SELECT_COUNT_FROM_MODEL = "SELECT COUNT(*) FROM car where model = ?";
 
@@ -36,27 +36,29 @@ public class CarDbRepositoryImpl implements CarRepository {
         this.findByIdPreStmt = connection.prepareStatement(SELECT_CAR_BY_ID);
         this.findByModelPreStmt = connection.prepareStatement(SELECT_CAR_BY_MODEL);
         this.findAll = connection.prepareStatement(SELECT_CAR_FIND_ALL);
-        this.deleteCarById = connection.prepareStatement(DELETE_CAR_DELETE_BY_ID);
+        this.deleteCarById = connection.prepareStatement(DELETE_CAR_DELETE_BY_MODEL);
     }
 
     @Override
     public Car createOrUpdate(Car car) throws SQLException {
-        Optional<Car> optCar = findById(car.getId());
+        Set<Car> optCar = findByModel(car.getModel());
+
         if (optCar.isEmpty()) {
-            createPreStmt.setLong(1, car.getId());
-            createPreStmt.setString(2, car.getModel());
-            createPreStmt.executeUpdate();
-        } else {
-            updatePreStmt.setString(1, car.getModel());
-            updatePreStmt.setLong(2, car.getId());
-            updatePreStmt.executeUpdate();
+            if (car.getId() == null) {
+
+                createPreStmt.setString(1, car.getModel());
+                createPreStmt.executeUpdate();
+            } else {
+                updatePreStmt.setString(1, car.getModel());
+                updatePreStmt.setLong(2, car.getId());
+                updatePreStmt.executeUpdate();
+            }
         }
         return car;
     }
 
     @Override
     public Optional<Car> findById(Long id) throws SQLException {
-        // validation
         int rowsCount = countRowsById(id);
         if (rowsCount > 1) {
             throw new RuntimeException("Car with id = " + id + " was found many times (" + rowsCount + ").");
@@ -75,7 +77,6 @@ public class CarDbRepositoryImpl implements CarRepository {
     @Override
     public Set<Car> findByModel(String model) throws SQLException {
 
-        // validation
         int rowsCount = countRowsByModel(model);
         if (rowsCount > 1) {
             throw new RuntimeException("Car with model = " + model + " was found many times (" + rowsCount + ").");
@@ -106,9 +107,9 @@ public class CarDbRepositoryImpl implements CarRepository {
     }
 
     @Override
-    public Boolean deleteById(Long id) throws SQLException {
+    public Boolean deleteByModel(String model) throws SQLException {
 
-        deleteCarById.setLong(1, id);
+        deleteCarById.setString(1, model);
         int affectedRows = deleteCarById.executeUpdate();
         return affectedRows != 0;
     }
@@ -132,11 +133,11 @@ public class CarDbRepositoryImpl implements CarRepository {
         for (Car car : cars) {
             Optional<Car> optCar = findById(car.getId());
             if (optCar.isEmpty()) {
-                createPreStmt.setLong(1, car.getId());
+//                createPreStmt.setLong(1, car.getId());
                 createPreStmt.setString(2, car.getModel());
                 createPreStmt.executeUpdate();
             } else {
-                updatePreStmt.setString(1, car.getModel());
+//                updatePreStmt.setString(1, car.getModel());
                 updatePreStmt.setLong(2, car.getId());
                 updatePreStmt.executeUpdate();
             }

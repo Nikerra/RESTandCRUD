@@ -50,12 +50,12 @@ public class CarController extends HttpServlet {
 
 
         String path = req.getRequestURI();
-        Long id = Long.valueOf(req.getParameter("id"));
+
         String model = req.getParameter("model");
 
         System.out.println("path=" + path);
-        System.out.println("id=" + id);
-        System.out.println("name=" + model);
+
+        System.out.println("model=" + model);
 
         PostgresqlDB postgresqlDB = new PostgresqlDB();
 
@@ -65,9 +65,12 @@ public class CarController extends HttpServlet {
                 CarService carService = new CarServiceImpl(carRepository);
 
                 if (path.endsWith("/api")) {
-                    carService.addCar(id, model);
+                    carService.addCar(model);
+                }else if (path.endsWith("/api/update")) {
+                    Long id = Long.valueOf(req.getParameter("id"));
+                    carService.editModel(id, model);
                 }else if (path.endsWith("/api/delete")) {
-                    carService.deleteCar(id);
+                    carService.deleteCar(model);
                 }
 
             } catch (Exception e) {

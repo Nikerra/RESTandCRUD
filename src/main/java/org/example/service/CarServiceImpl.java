@@ -16,8 +16,8 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public void addCar(Long id, String model) throws SQLException {
-        carRepository.createOrUpdate(new Car(id, model));
+    public void addCar(String model) throws SQLException {
+        carRepository.createOrUpdate(new Car(model));
     }
 
     @Override
@@ -39,8 +39,8 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public boolean deleteCar(Long id) throws SQLException {
-        return carRepository.deleteById(id);
+    public boolean deleteCar(String model) throws SQLException {
+        return carRepository.deleteByModel(model);
     }
 
     @Override

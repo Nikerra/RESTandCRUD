@@ -11,7 +11,7 @@ public interface CarRepository extends Repository<Car, String> {
     Set<Car> findByModel(String model) throws SQLException;
     Optional<Car> findById(Long id) throws SQLException;
     Set<Car> findAll() throws SQLException;
-    Boolean deleteById(Long id) throws SQLException;
+    Boolean deleteByModel(String model) throws SQLException;
     Boolean deleteAll() throws SQLException;
     Set<Car> createAll(Collection<Car> cars) throws SQLException;
 }

@@ -12,7 +12,7 @@ public interface Repository<T, I>{
     Set<T> findAll() throws SQLException;
 
     Optional<T> findById(Long id) throws SQLException;
-    Boolean deleteById(Long id) throws SQLException;
+    Boolean deleteByModel(String model) throws SQLException;
 
     Boolean deleteAll() throws SQLException;
 }

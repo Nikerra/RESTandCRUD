@@ -9,6 +9,10 @@ public class Car {
     private Owner owner;
 
     public Car() {}
+
+    public Car(String model) {
+        this.model = model;
+    }
     public Car(Long id, String model) {
         this.id = id;
         this.model = model;
