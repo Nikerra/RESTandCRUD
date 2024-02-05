@@ -48,19 +48,4 @@ public class CarServiceImpl implements CarService {
         return carRepository.findByModel(model);
     }
 
-    @Override
-    public Set<Car> findAll() throws SQLException {
-        return carRepository.findAll();
-    }
-
-    @Override
-    public Boolean deleteAll() throws SQLException {
-        return carRepository.deleteAll();
-    }
-
-    @Override
-    public Set<Car> createAll(Collection<Car> cars) throws SQLException {
-        return carRepository.createAll(cars);
-    }
-
 }

@@ -23,7 +23,7 @@ public class CarDbRepositoryImpl implements CarRepository {
     private final PreparedStatement updatePreStmt;
     private final PreparedStatement findByIdPreStmt;
     private final PreparedStatement findByModelPreStmt;
-    private final PreparedStatement findAll;
+
     private final PreparedStatement deleteCarById;
 
     public CarDbRepositoryImpl(Connection connection) throws SQLException {
@@ -32,7 +32,6 @@ public class CarDbRepositoryImpl implements CarRepository {
         this.updatePreStmt = connection.prepareStatement(UPDATE_CAR_SQL);
         this.findByIdPreStmt = connection.prepareStatement(SELECT_CAR_BY_ID);
         this.findByModelPreStmt = connection.prepareStatement(SELECT_CAR_BY_MODEL);
-        this.findAll = connection.prepareStatement(SELECT_CAR_FIND_ALL);
         this.deleteCarById = connection.prepareStatement(DELETE_CAR_DELETE_BY_MODEL);
     }
 
@@ -90,57 +89,11 @@ public class CarDbRepositoryImpl implements CarRepository {
     }
 
     @Override
-    public Set<Car> findAll() throws SQLException {
-        Set<Car> cars = new HashSet<>();
-        ResultSet resultSet = findAll.executeQuery();
-
-        while (resultSet.next()) {
-            Long id = resultSet.getLong("id");
-            String model = resultSet.getString("model");
-            Car car = new Car(id, model);
-            cars.add(car);
-        }
-        return cars;
-    }
-
-    @Override
     public Boolean deleteByModel(String model) throws SQLException {
 
         deleteCarById.setString(1, model);
         int affectedRows = deleteCarById.executeUpdate();
         return affectedRows != 0;
-    }
-
-    @Override
-    public Boolean deleteAll() throws SQLException {
-
-        ResultSet resultSet = findAll.executeQuery();
-        int affectedRows = 0;
-        while (resultSet.next()) {
-            String id = resultSet.getString("id");
-            deleteCarById.setString(1,id);
-            affectedRows = deleteCarById.executeUpdate();
-        }
-        return affectedRows != 0;
-    }
-
-    @Override
-    public Set<Car> createAll(Collection<Car> cars) throws SQLException {
-        Set<Car> carSet = new HashSet<>();
-        for (Car car : cars) {
-            Optional<Car> optCar = findById(car.getId());
-            if (optCar.isEmpty()) {
-//                createPreStmt.setLong(1, car.getId());
-                createPreStmt.setString(2, car.getModel());
-                createPreStmt.executeUpdate();
-            } else {
-//                updatePreStmt.setString(1, car.getModel());
-                updatePreStmt.setLong(2, car.getId());
-                updatePreStmt.executeUpdate();
-            }
-            carSet.add(car);
-        }
-        return carSet;
     }
 
     private int countRowsById(Long id) throws SQLException {
