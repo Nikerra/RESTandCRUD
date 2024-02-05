@@ -9,7 +9,6 @@ import java.util.Set;
 public interface OwnerRepository extends Repository<Owner, String> {
     Set<Owner> findByName(String name) throws SQLException;
     Optional<Owner> findById(Long id) throws SQLException;
-
     Boolean deleteById(String id) throws SQLException;
 
 }
