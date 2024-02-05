@@ -1,5 +1,6 @@
 package org.example.repository;
 
+import org.example.dbconnection.PostgresqlDB;
 import org.example.model.Car;
 
 import java.sql.Connection;
@@ -9,7 +10,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class CarDbRepositoryImpl implements CarRepository {
-    private final Connection connection;
+    private Connection connection;
     private static final String CREATE_CAR_SQL = "INSERT INTO car (model) VALUES (?)";
     private static final String UPDATE_CAR_SQL = "UPDATE car SET model = ? WHERE id = ?";
     private static final String SELECT_CAR_BY_ID = "SELECT * FROM car WHERE id = ?";
@@ -19,12 +20,12 @@ public class CarDbRepositoryImpl implements CarRepository {
     private static final String SELECT_COUNT_FROM_ID = "SELECT COUNT(*) FROM car where id = ?";
     private static final String SELECT_COUNT_FROM_MODEL = "SELECT COUNT(*) FROM car where model = ?";
 
-    private final PreparedStatement createPreStmt;
-    private final PreparedStatement updatePreStmt;
-    private final PreparedStatement findByIdPreStmt;
-    private final PreparedStatement findByModelPreStmt;
+    private PreparedStatement createPreStmt;
+    private PreparedStatement updatePreStmt;
+    private PreparedStatement findByIdPreStmt;
+    private PreparedStatement findByModelPreStmt;
 
-    private final PreparedStatement deleteCarById;
+    private PreparedStatement deleteCarById;
 
     public CarDbRepositoryImpl(Connection connection) throws SQLException {
         this.connection = connection;
@@ -35,6 +36,21 @@ public class CarDbRepositoryImpl implements CarRepository {
         this.deleteCarById = connection.prepareStatement(DELETE_CAR_DELETE_BY_MODEL);
     }
 
+    public CarDbRepositoryImpl() {
+
+    }
+    public CarRepository initConnection() {
+        PostgresqlDB postgresqlDB = new PostgresqlDB();
+        CarRepository carRepository;
+        try {
+            Class.forName("org.postgresql.Driver");
+            carRepository = new CarDbRepositoryImpl(postgresqlDB.getConnection());
+
+        } catch (ClassNotFoundException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return carRepository;
+    }
     @Override
     public Car createOrUpdate(Car car) throws SQLException {
         Set<Car> optCar = findByModel(car.getModel());
