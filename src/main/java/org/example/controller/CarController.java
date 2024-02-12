@@ -49,7 +49,7 @@ public class CarController extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
 
             try {
-                JSONObject jo = (JSONObject) JSONStringConverter(req);
+                JSONObject jo = (JSONObject) JSONConverter(req);
                 String model = (String) jo.get("model");
 
                 CarService carService = new CarServiceImpl(carDbRepository.initConnection());
@@ -63,7 +63,7 @@ public class CarController extends HttpServlet {
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
 
         try {
-            JSONObject jo = (JSONObject) JSONStringConverter(req);
+            JSONObject jo = (JSONObject) JSONConverter(req);
             String model = (String) jo.get("model");
 
             CarService carService = new CarServiceImpl(carDbRepository.initConnection());
@@ -77,7 +77,7 @@ public class CarController extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) {
 
         try {
-            JSONObject jo = (JSONObject) JSONStringConverter(req);
+            JSONObject jo = (JSONObject) JSONConverter(req);
             String model = (String) jo.get("model");
             Long id = Long.valueOf((String) jo.get("id"));
 
@@ -87,7 +87,7 @@ public class CarController extends HttpServlet {
             throw new RuntimeException(e);
         }
     }
-    private Object JSONStringConverter(HttpServletRequest req) throws IOException, ParseException {
+    private Object JSONConverter(HttpServletRequest req) throws IOException, ParseException {
         BufferedReader reader = req.getReader();
         int intValueOfChar;
         StringBuilder jsonString = new StringBuilder();
