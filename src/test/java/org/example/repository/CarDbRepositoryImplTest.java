@@ -67,6 +67,4 @@ class CarDbRepositoryImplTest {
             throw new RuntimeException(e);
         }
     }
-
-
 }
