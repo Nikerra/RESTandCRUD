@@ -1,6 +1,5 @@
 package org.example.controller;
 
-
 import org.example.model.Car;
 import org.example.repository.CarDbRepositoryImpl;
 import org.example.service.CarService;
