@@ -1,6 +1,5 @@
 package org.example.controller;
 
-
 import org.example.model.Car;
 import org.example.repository.CarDbRepositoryImpl;
 import org.example.service.CarService;
@@ -41,7 +40,6 @@ public class CarController extends HttpServlet {
             }
         }
     }
-
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
 
