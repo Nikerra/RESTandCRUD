@@ -8,7 +8,6 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CarDbRepositoryImplTest {
-
     static CarRepository carRepository;
     Car car = new Car( "Lada");
     Car carUnit = new Car(2L, "Lada");

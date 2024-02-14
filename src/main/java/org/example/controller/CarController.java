@@ -20,7 +20,6 @@ import java.util.Set;
 @WebServlet("/")
 public class CarController extends HttpServlet {
     CarDbRepositoryImpl carDbRepository = new CarDbRepositoryImpl();
-
     public CarController() {}
 
     @Override
