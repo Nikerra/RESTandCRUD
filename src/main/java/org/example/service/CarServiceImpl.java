@@ -2,9 +2,7 @@ package org.example.service;
 
 import org.example.model.Car;
 import org.example.repository.CarRepository;
-
 import java.sql.SQLException;
-import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 
