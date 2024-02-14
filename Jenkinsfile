@@ -7,7 +7,7 @@ pipeline {
             //     // // Сначала переходим в каталог с проектом
                 dir('C:\\studyAndWork\\RESTandCRUD') {
             //     //     // Затем выполняем сборку проекта Maven
-                    bat 'mvn clean package'
+                    // bat 'mvn clean package'
                 }
             }
         }
